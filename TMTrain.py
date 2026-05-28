@@ -1,4 +1,4 @@
-# Main Di-Electron Training Script
+# Main Training Script
 
 import os
 import math
