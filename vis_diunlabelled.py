@@ -16,7 +16,7 @@ from iwpc.learn_dist.kernels.constant_kernel import ConstantKernel
 from iwpc.learn_dist.kernels.permutation_kernel import PermutationKernel
 from iwpc.models.utils import basic_model_factory
 from iwpc.models.layers import ConstantScaleLayer
-from InvariantMass import CustomDielectronEncoding
+from _InvariantMass import CustomDielectronEncoding
 from iwpc.learn_dist.kernels.partially_exact_unlabelled_kernel_trainer import PartiallyExactUnLabelledKernelTrainer
 from iwpc.scalars.scalar import Scalar
 from iwpc.scalars.scalar_function import ScalarFunction

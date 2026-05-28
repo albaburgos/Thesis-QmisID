@@ -21,7 +21,7 @@ from iwpc.models.utils import basic_model_factory
 from iwpc.models.layers import ConstantScaleLayer
 from iwpc.learn_dist.fdivergence_minimization.fdivergence_minimizing_kernel_trainer import FDivergenceMinimizingKernelTrainer
 from iwpc.learn_dist.kernels.permutation_kernel import PermutationKernel
-from InvariantMass import CustomDielectronEncoding
+from _InvariantMass import CustomDielectronEncoding
 from iwpc.divergences import DifferentiableFDivergence, KLDivergence, JensenShannonDivergence
 from iwpc.learn_dist.kernels.finite_kernel import FiniteKernelInterface
 from iwpc.learn_dist.kernels.trainable_kernel_base import TrainableKernelBase

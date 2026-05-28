@@ -23,7 +23,7 @@ from iwpc.learn_dist.kernels.permutation_kernel import PermutationKernel
 from iwpc.models.utils import basic_model_factory
 from iwpc.models.layers import ConstantScaleLayer
 from iwpc.learn_dist.kernels.partially_exact_unlabelled_kernel_trainer import PartiallyExactUnLabelledKernelTrainer
-from InvariantMass import CustomDielectronEncoding
+from _InvariantMass import CustomDielectronEncoding
 from torch.nn.functional import logsigmoid
 from iwpc.learn_dist.fdivergence_minimization.fdivergence_minimizing_kernel_trainer import FDivergenceMinimizingKernelTrainer
 from iwpc.divergences import DifferentiableFDivergence, KLDivergence, JensenShannonDivergence
