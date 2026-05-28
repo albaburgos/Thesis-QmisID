@@ -1,4 +1,4 @@
-# QmisID — Electron Charge Misidentification with Machine Learning
+# QmisID — Electron Charge Misidentification for the ATLAS di-Higgs analysis
 
 Code accompanying the thesis on learning electron charge misidentification (QmisID) probabilities using neural networks and kernel-based methods. The project covers single-electron network training (Chapters 3–4) and an unlabelled dielectron approach with in-situ detector calibration (Chapter 5), built on the [IWPC](https://github.com/) framework with PyTorch Lightning.
 
@@ -39,14 +39,14 @@ python DielectronUnlabelled.py
 
 ### Experimentation — Chapters 3–4 (`TMTrain*`)
 
-Variants and ablations on the single-electron network:
+Variants on the single-electron network:
 
 | Script | Description |
 |---|---|
-| `TMTrain_single.py` | Minimal single-variable training |
+| `TMTrain_single.py` | Single-electron dataset training |
 | `TMTrain_phi.py` | Training with φ-dependent encoding |
 | `TMTrain_KappaNet.py` | Alternative network architecture |
-| `TMTrain_Z_peak.py` | Training with Z-peak event selection |
+| `TMTrain_Z_peak.py` | Investigating the Z-peak shift |
 | `TMTrain_onnx.py` | Training with inline ONNX export |
 | `TMTrain_Likelihood_script.py` | Likelihood ratio evaluation script |
 
@@ -56,20 +56,21 @@ Variants on the dielectron unlabelled approach and kernel design:
 
 | Script | Description |
 |---|---|
-| `DielectronExp.py`, `DielectronExp2.py`, `DielectronExp3.py` | Experimental dielectron training variants |
-| `DielectronDummy.py`, `DielectronDummyTrain.py` | Toy / dummy dielectron setups |
-| `DielectronUnlabelled1deta.py`, `DielectronUnlabelled1dpt.py` | 1D sweeps over η and pT |
+| `DielectronExp.py`, `DielectronExp2.py`, `DielectronExp3.py` | Experimental dielectron training |
+| `DielectronDummy.py`, `DielectronDummyTrain.py` | Toy Dielectron setups |
+| `DielectronUnlabelled1deta.py`, `DielectronUnlabelled1dpt.py` | 1D Dielectron training in η and pT |
 | `Dielectron_DiscreteCut.py` | Discrete cut-based dielectron baseline |
 | `Dielectron_add_cond_kernel.py` | Conditional kernel addition |
-| `Dielectron_binned_divergence.py` | Binned f-divergence evaluation |
+| `Dielectron_binned_divergence.py` | Binned f-divergence evaluation utility|
 | `Dielectron_invariant_mass_plots.py` | Invariant mass distribution plots |
-| `gaussian_kernel_single.py` | Single Gaussian kernel baseline |
-| `gaussian_kernel_smearing.py` | Smearing study with Gaussian kernel |
+
+| `gaussian_kernel_single.py` | Single Gaussian kernel |
 | `gaussian_kernel_global_alpha.py` | Global α parameter training |
-| `gaussian_kernel_variable_alpha.py` | Per-bin variable α training |
+| `gaussian_kernel_variable_alpha.py` | Variable α parameter training |
 | `gaussian_kernel_mixture_eval.py` | Mixture kernel evaluation |
 | `gaussian_kernel_two_trainers.py` | Two-trainer alternating optimisation |
-| `gaussian_kernel_plot.py`, `gaussian_kernel_plotting.py` | Kernel diagnostic plots |
+| `gaussian_kernel_smearing.py` | pt error smearing plots |
+| `gaussian_kernel_plot.py`, `gaussian_kernel_plotting.py` | Kernel plots |
 
 ### Closure tests (`closure_*`)
 
@@ -77,8 +78,8 @@ Validate that the trained networks reproduce the correct misidentification rate 
 
 | Script | Description |
 |---|---|
-| `closure_single_electron.py` | Closure on single-electron simulation |
-| `closure_dielectron.py` | Closure on dielectron pairs |
+| `closure_single_electron.py` | Closure on single-electron simulation (Chapters 3,4) |
+| `closure_dielectron.py` | Closure on dielectron pairs (Chapter 5)) |
 | `closure_onnx_model.py` | Closure evaluation from exported ONNX model |
 | `closure_benchmark_MC.py` | MC benchmark comparison |
 | `closure_benchmark_MC_allpanels.py` | MC benchmark with full panel layout |
@@ -90,18 +91,18 @@ Interactive IWPC visualiser scripts for inspecting learned functions:
 | Script | Description |
 |---|---|
 | `vis.py` | Single-electron QmisID probability visualiser |
+| `vis_diunlabelled.py` | Dielectron kernel model visualiser |
 | `vis_unlabelled.py` | Unlabelled kernel model visualiser |
-| `vis_diunlabelled.py` | Dielectron unlabelled model visualiser |
 | `vis_kernel.py` | Kernel function visualiser |
 
 ### Muon efficiency experiments (`MuonEfficiencies_*`)
 
-Exploratory adaptation of the QmisID approach to muon efficiency estimation:
+Experiments with Muon Efficiencies.
 
 | Script | Description |
 |---|---|
-| `MuonEfficiencies_TrainB.py` | Muon efficiency training — background model |
-| `MuonEfficiencies_TrainM.py` | Muon efficiency training — signal model |
+| `MuonEfficiencies_TrainB.py` | Muon efficiency training — binary cross-entropy |
+| `MuonEfficiencies_TrainM.py` | Muon efficiency training — multi-class cross-entropy |
 
 ### Utilities (`_*`)
 
@@ -110,8 +111,8 @@ Custom encoding and data preparation scripts:
 | Script | Description |
 |---|---|
 | `_InvariantMass.py` | Custom dielectron encoding (`CustomDielectronEncoding`) |
-| `_make_data.py` | Data preparation pipeline |
-| `_make_data_original.py` | Original data preparation (reference) |
+| `_make_data.py` | Data prep script |
+| `_make_data_original.py` | Original data prep script provided by Cambridge ATLAS group |
 | `_export_onnx.py` | ONNX export utility |
 
 ---
@@ -120,5 +121,4 @@ Custom encoding and data preparation scripts:
 
 - [PyTorch](https://pytorch.org/) and [PyTorch Lightning](https://lightning.ai/)
 - [IWPC](https://github.com/) — internal framework providing data modules, kernel trainers, encodings, and visualisers
-- [ONNX Runtime](https://onnxruntime.ai/) for model inference
 - NumPy, Matplotlib, Bokeh (visualisation)
