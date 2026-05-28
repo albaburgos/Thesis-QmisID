@@ -56,7 +56,7 @@ Variants on the dielectron unlabelled approach and kernel design:
 
 | Script | Description |
 |---|---|
-| `DielectronExp.py`, `DielectronExp2.py`, `DielectronExp3.py` | Experimental dielectron training |
+| `DielectronExp.py` | Experimental dielectron training |
 | `DielectronDummy.py`, `DielectronDummyTrain.py` | Toy Dielectron setups |
 | `DielectronUnlabelled1deta.py`, `DielectronUnlabelled1dpt.py` | 1D Dielectron training in η and pT |
 | `Dielectron_DiscreteCut.py` | Discrete cut-based dielectron baseline |
