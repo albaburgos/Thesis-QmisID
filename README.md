@@ -25,7 +25,7 @@ Trains a neural network to predict the per-electron charge misidentification pro
 python TMTrain.py
 ```
 
-### `DielectronUnlabelled.py` — Dielectron calibration (Section 3.2)
+### `DielectronUnlabelled.py` — Dielectron calibration (Section 3.3)
 
 Trains an unlabelled kernel-based model using dielectron pairs, without requiring per-electron truth labels. Applies an f-divergence minimisation (`FDivergenceMinimizingKernelTrainer`) with a mixture kernel over the dielectron invariant mass, enabling in-situ calibration to data.
 
