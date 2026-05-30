@@ -1,6 +1,6 @@
 # QmisID — Electron Charge Misidentification for the ATLAS di-Higgs analysis
 
-Code accompanying the thesis on learning electron charge misidentification (QmisID) probabilities using neural networks and kernel-based methods. The project covers single-electron network training (Chapters 3–4) and an unlabelled dielectron approach with in-situ detector calibration (Chapter 5), built on the [IWPC](https://github.com/) framework with PyTorch Lightning.
+Code accompanying the thesis on learning electron charge misidentification (QmisID) probabilities using neural networks and kernel-based methods. The project covers single-electron network training (Sections 3.1, 3.2) and an unlabelled dielectron approach with in-situ detector calibration (Section 3.3), built on the [IWPC](https://github.com/) framework with PyTorch Lightning.
 
 ---
 
@@ -17,7 +17,7 @@ Pre-trained models are provided in ONNX format and can be loaded with any ONNX-c
 
 ## Main training scripts
 
-### `TMTrain.py` — Single-electron network (Chapters 3–4)
+### `TMTrain.py` — Single-electron network (Sections 3.1, 3.2)
 
 Trains a neural network to predict the per-electron charge misidentification probability κ directly from simulation truth labels. Uses the IWPC `PandasDirDataModule` and a `KappaLightning` module with TensorBoard logging and early stopping.
 
@@ -25,7 +25,7 @@ Trains a neural network to predict the per-electron charge misidentification pro
 python TMTrain.py
 ```
 
-### `DielectronUnlabelled.py` — Dielectron calibration (Chapter 5)
+### `DielectronUnlabelled.py` — Dielectron calibration (Section 3.2)
 
 Trains an unlabelled kernel-based model using dielectron pairs, without requiring per-electron truth labels. Applies an f-divergence minimisation (`FDivergenceMinimizingKernelTrainer`) with a mixture kernel over the dielectron invariant mass, enabling in-situ calibration to data.
 
@@ -37,7 +37,7 @@ python DielectronUnlabelled.py
 
 ## Repository structure
 
-### Experimentation — Chapters 3–4 (`TMTrain*`)
+### Experimentation — Sections 3.1,3.2 (`TMTrain*`)
 
 Variants on the single-electron network:
 
@@ -50,7 +50,7 @@ Variants on the single-electron network:
 | `TMTrain_onnx.py` | Training with inline ONNX export |
 | `TMTrain_Likelihood_script.py` | Likelihood ratio evaluation script |
 
-### Experimentation — Chapter 5 (`Dielectron*`, `gaussian_kernel*`)
+### Experimentation — Section 3.3 (`Dielectron*`, `gaussian_kernel*`)
 
 Variants on the dielectron unlabelled approach and kernel design:
 
@@ -78,8 +78,8 @@ Validate that the trained networks reproduce the correct misidentification rate 
 
 | Script | Description |
 |---|---|
-| `closure_single_electron.py` | Closure on single-electron simulation (Chapters 3,4) |
-| `closure_dielectron.py` | Closure on dielectron pairs (Chapter 5)) |
+| `closure_single_electron.py` | Closure on single-electron simulation (Sections 3.1,3.2) |
+| `closure_dielectron.py` | Closure on dielectron pairs (Section 3.3)) |
 | `closure_onnx_model.py` | Closure evaluation from exported ONNX model |
 | `closure_benchmark_MC.py` | MC benchmark comparison |
 | `closure_benchmark_MC_allpanels.py` | MC benchmark with full panel layout |
