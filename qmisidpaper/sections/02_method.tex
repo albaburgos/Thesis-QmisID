@@ -90,7 +90,7 @@ H(q,p_\theta).
 \end{equation}
 
 
-\subsection{Prior Art: A Log-Likelihood Test}
+\subsection{Prior Art: Log-Likelihood Test}
 
 The traditional approach to measure QmisID backgrounds uses a Poisson binned-likelihood technique \cite{huang2025qmisid}. One can denote the observed number of SC events in one bin as \(N_{\mathrm{SC}}\), and model the probability of observing \(N_{\mathrm{SC}}\) as a Poisson distribution with mean \(\mu\), which is a function of the total number of counts in that bin and the flip rates of electron 1 and 2, \(\epsilon\). This is a first-order approximation that ignores second-order terms, where both electron 1 and electron 2 have been flipped in reconstruction.
 
@@ -132,28 +132,35 @@ N^{ij,kl}\big(\epsilon^{i,k}+\epsilon^{j,l}\big)
 \end{equation}
 
 
-\subsection{New Approach: A KL Divergence Test}
-To formulate the problem in a continuous probabilistic framework, we denote the truth-level rate of di-electron events by \(\lambda^{T}(e_1,e_2)\). Each electron undergoes independent charge misidentification with probability \(\epsilon(e)\), giving reconstructed rates \(\lambda^{R}(e_1,e_2)\) of opposite-charge (OC) and same-charge (SC) events.
+\subsection{New Approach: KL Divergence Test}
+To formulate the problem in a continuous probabilistic framework, we denote the truth-level rate of di-electron events by \(\lambda^{T}(x_1,x_2)\). Each electron undergoes independent charge misidentification with probability \(\epsilon(x)\), giving reconstructed rates \(\lambda^{R}(x_1,x_2)\) of opposite-charge (OC) and same-charge (SC) events.
 
 \begin{equation}
 \begin{aligned}
-    \lambda_{\mathrm{OC}}^{R}(e_1,e_2)
-    &= \lambda^{T}(e_1,e_2)\,
-       \Big[(1-\epsilon(e_1))(1-\epsilon(e_2))
-       + \epsilon(e_1)\epsilon(e_2)\Big], \\[6pt]
-    \lambda_{\mathrm{SC}}^{R}(e_1,e_2)
-    &= \lambda^{T}(e_1,e_2)\,
-       \Big[\epsilon(e_1)(1-\epsilon(e_2))
-       + (1-\epsilon(e_1))\epsilon(e_2)\Big] \\[4pt]
-    &= \lambda^{T}(e_1,e_2)\,
-       \Big[\epsilon(e_1) + \epsilon(e_2)
-       - 2\,\epsilon(e_1)\epsilon(e_2)\Big].
+    \lambda_{\mathrm{OC}}^{R}(x_1,x_2)
+    &= \lambda^{T}(x_1,x_2)\,
+       \Big[(1-\epsilon(x_1))(1-\epsilon(x_2))
+       + \epsilon(x_1)\epsilon(x_2)\Big], \\[6pt]
+    \lambda_{\mathrm{SC}}^{R}(x_1,x_2)
+    &= \lambda^{T}(x_1,x_2)\,
+       \Big[\epsilon(x_1)(1-\epsilon(x_2))
+       + (1-\epsilon(x_1))\epsilon(x_2)\Big] \\[4pt]
+    &= \lambda^{T}(x_1,x_2)\,
+       \Big[\epsilon(x_1) + \epsilon(x_2)
+       - 2\,\epsilon(x_1)\epsilon(x_2)\Big].
 \end{aligned}
 \end{equation}
 
-The ratio of the expected number of SC and OC events for a given pair of electron kinematics \((e_1,e_2)\) is therefore a simple function of the corresponding charge-flip probabilities \(\epsilon(e_1)\) and \(\epsilon(e_2)\). The common factor \(\lambda^{T}(e_1,e_2)\) cancels, so the ratio \(\dfrac{\lambda_{\mathrm{SC}}^{R}(e_1,e_2)}{\lambda_{\mathrm{OC}}^{R}(e_1,e_2)}\) is independent of the unknown truth-level distribution.
+The ratio of the expected number of SC and OC events for a given pair of electron kinematics \((x_1,x_2)\) is therefore a simple function of the corresponding charge-flip probabilities \(\epsilon(x_1)\) and \(\epsilon(x_2)\). The common factor \(\lambda^{T}(x_1,x_2)\) cancels, so the ratio \(\dfrac{\lambda_{\mathrm{SC}}^{R}(x_1,x_2)}{\lambda_{\mathrm{OC}}^{R}(x_1,x_2)}\) is independent of the unknown truth-level distribution.
 
-Introducing the rescaled variable \(\kappa(e) = \log\!\left(\epsilon(e)/(1-\epsilon(e))\right)\), the ratio becomes \(\lambda_{\mathrm{SC}}^{R}(e_1,e_2)/\lambda_{\mathrm{OC}}^{R}(e_1,e_2) = \left(e^{\kappa(e_1)}+e^{\kappa(e_2)}\right)/\left(1+e^{\kappa(e_1)+\kappa(e_2)}\right)\), which depends on \(e_1\) and \(e_2\) only through their individual rescaled charge-flip variables.
+Introducing the rescaled variable \(\kappa(x) = \log\!\left(\epsilon(x)/(1-\epsilon(x))\right)\), the ratio depends on \(x_1\) and \(x_2\) only through their individual rescaled charge-flip variables.
+
+\begin{equation}
+\label{eq:ratio_kappa}
+\frac{\lambda_{\mathrm{SC}}^{R}(x_1,x_2)}{\lambda_{\mathrm{OC}}^{R}(x_1,x_2)}
+=
+\frac{e^{\kappa(x_1)}+e^{\kappa(x_2)}}{1+e^{\kappa(x_1)+\kappa(x_2)}}.
+\end{equation}
 
 Our goal is to construct a probabilistic model \(p\) that predicts the true conditional probability  \(q\)  of same-charge assignment given the kinematic properties of two electrons, 
 \(
@@ -161,9 +168,7 @@ p\!\left(\mathrm{SC}\mid x_1,x_2\right)
 =
 q\!\left(\mathrm{SC}\mid x_1,x_2\right).
 \)
-Let \(q_i\) = \(\ell_i \in \{0,1\}\) denote the observed label for event \(i\), where \(\ell_i=1\) corresponds to an SC event and \(\ell_i=0\) to an OC event. 
-
-A model distribution \(p\) most closely matches the data distribution \(q\) when the KL divergence or equivalently the cross-entropy loss $H(\frac{q}{p})$ is minimized. A binary cross-entropy loss can be written as shown below.
+Let \(q_i\) = \(\ell_i \in \{0,1\}\) denote the observed label for event \(i\), where \(\ell_i=1\) corresponds to an SC event and \(\ell_i=0\) to an OC event. A model distribution \(p\) most closely matches the data distribution \(q\) when the KL divergence or equivalently the cross-entropy loss $H(\frac{q}{p})$ is minimized. A binary cross-entropy loss can be written as shown below.
 
 \begin{equation}
 \label{eq:loss}
@@ -173,14 +178,10 @@ A model distribution \(p\) most closely matches the data distribution \(q\) when
 \sum_{i=1}^{N}
 \left[
 \ell_i\,
-\log\!\big(
-\sigma(p(\mathrm{OC} \mid x_1, x_2))
-\big)
+p(\mathrm{OC} \mid x_1, x_2)
 +
 (1-\ell_i)\,
-\log\!\big(
 p(\mathrm{SC} \mid x_1, x_2)
-\big)
 \right].
 \end{equation}
 
@@ -188,19 +189,19 @@ p(\mathrm{SC} \mid x_1, x_2)
 Alternatively one can write \(
 p 
 =
-\sigma\!\big(f(e_1^i,e_2^i)\big),
-\) where \(f(e_1,e_2)\) is a real-valued classifier score.
+\sigma\!\big(f(x_1^i,x_2^i)\big),
+\) where \(f(x_1,x_2)\) is a real-valued classifier score.
 
 
 \begin{equation}
     \label{eq:f_phi}
-    f(e_1,e_2)
-    \;=\; \log\!\left(1 + e^{\phi(e_1) + \phi(e_2)}\right)
-    \;-\; \log\!\left(e^{\phi(e_1)} + e^{\phi(e_2)}\right).
+    f(x_1,x_2)
+    \;=\; \log\!\left(1 + e^{\phi(x_1) + \phi(x_2)}\right)
+    \;-\; \log\!\left(e^{\phi(x_1)} + e^{\phi(x_2)}\right).
 \end{equation}
 
 A well-trained classifier \(f_{\mathrm{min}}\) converges to the
-solution \(\phi(e) = \kappa(e)\).
+solution \(\phi(x) = \kappa(x)\).
 
 Neural networks are universal function approximators and are therefore ideally suited to learning continuous detector calibration functions. In this thesis, the model is implemented as a dense neural network (DNN) using the PyTorch machine learning framework. A DNN is a parametrised continuous map from an input space \(\mathbb{R}^m\) to an output space \(\mathbb{R}^n\), constructed as a sequence of affine transformations interleaved with non-linear activation functions LeakyReLU:
 
@@ -231,7 +232,7 @@ For the task at hand, the network learns a continuous mapping
 \(
 \mathbb{R}^2\rightarrow\mathbb{R},
 \)
-using five hidden layers and producing a single scalar output \(\phi(e)\). This output is inverted to recover the corresponding charge-flip probability  \(\epsilon(e)\). Despite the simple architecture, the network is sufficiently expressive to model the smooth kinematic dependence of charged particle misidentification rates across detector phase space.
+using five hidden layers and producing a single scalar output \(\phi(x)\). This output is inverted to recover the corresponding charge-flip probability  \(\epsilon(x)\). Despite the simple architecture, the network is sufficiently expressive to model the smooth kinematic dependence of charged particle misidentification rates across detector phase space.
 
 
 \section{Control Region Selection and Object Definitions}
