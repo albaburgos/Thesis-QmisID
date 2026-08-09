@@ -1,0 +1,73 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---------- Packages ----------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{xcolor}
+\usepackage{authblk}
+
+\usepackage[
+  backend=biber,
+  style=numeric,
+  sorting=none,
+  giveninits=true
+]{biblatex}
+\addbibresource{references.bib}
+
+\usepackage[hidelinks]{hyperref}
+\usepackage[capitalise]{cleveref}
+
+% ---------- Title ----------
+\title{Learning Charge Misidentification Probabilities in Charged Particle Pair Production}
+
+\author[1]{Jeremy J. H. Wilkinson}
+\affil[1]{Cambridge University}
+
+\author[2]{Christopher Lester}
+\affil[2]{Cambridge University}
+
+\author[3]{Alba Burgos Mondéjar}
+\affil[3]{Cambridge University}
+
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This paper presents a continuous framework for learning charge-misidentification (QmisID)
+probabilities in charged particle pair production. 
+As a proof-of-principle, the method is applied to the two-lepton same-charge (2LSC)
+channel of the non-resonant di-Higgs analysis. Here an algorithm is setup to
+learn the charge-misidentification rate by comparing the kinematic distributions of same-
+sign and opposite-sign di-electron events near the Z → e+e− peak, where Standard
+Model signatures are dominant. Whereas the state-of-the-art likelihood-based method
+uses a coarse 3 × 4 binning, the new method introduced models the charge-misidentification probability as
+a continuous function of charged particle kinematics. This refined granularity provides
+detector-response information that was previously inaccessible and enables a diﬀerential
+description of QmisID eﬀects. The result is a practical framework that is continuous, 
+high-dimensional, and data-driven. 
+The results showcase how constrained classification, naturally accommodated in machine-
+learning platforms, can be used as an instrument for extracting rich detector-level re-
+sponse functions. This points toward a new paradigm for precision background estimation
+in high-energy physics, with broader implications for current and future LHC analyses.
+\end{abstract}
+
+\input{sections/01_introduction}
+\input{sections/02_method}
+\input{sections/03_benchmark}
+\input{sections/04_opendata}
+
+\nocite{*} % TEMP: remove once inline \cite{} calls are added throughout the text
+\printbibliography
+
+\end{document}

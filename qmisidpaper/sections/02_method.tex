@@ -1,0 +1,319 @@
+\section{Method}
+\label{sec:method}
+
+Maximum Likelihood Estimation (MLE) is a flexible way of estimating the parameters of an assumed probability distribution $p$ given some observed data $q$. The point in parameter space $\theta_{\mathrm{ML}}$ that maximises the likelihood function is the maximum likelihood estimate,
+
+\begin{equation}
+\theta_{\mathrm{ML}}
+:=
+\arg\max_{\theta}
+\prod_{i=1}^{N} p_{\theta}(x_i).
+\end{equation}
+
+It is often more convenient to work with the logarithm of the likelihood,
+\begin{equation}
+\theta_{\mathrm{ML}}
+=
+\arg\max_{\theta} \frac{1}{N}
+\sum_{i=1}^{N}
+\log p_{\theta}(x_i).
+\end{equation}
+
+Since we can never know the response of the ATLAS detector to infinite precision, the best we can achieve is a distribution $p$ which closely approximates the data distribution $q$. 
+
+The problem with this MLE technique is that significant data is needed to provide a reasonable approximation of each competing model’s likelihood function. Effective sampling density falls exponentially as a function of the number of dimensions in the data, complicating high-dimensional analysis. The solution is often to marginalize over some measured dimensions to obtain sufficiently high data density, but doing so risks reducing the sensitivity of the test. It is not always clear which dimensions should be marginalized over, and this ambiguity contributes to the ``look-elsewhere effect'' \cite{wilkinson2024divergences}.
+
+The trick that motivates this thesis is that in the limit of infinite data,
+$N \to \infty$, Maximum Likelihood Estimation asymptotically selects the set of parameters that minimise the Kullback--Leibler (KL) divergence between a proposed model $p_{\theta}$ and the true underlying data distribution $q$. The KL divergence between two probability distributions $q(x)$ and $p_{\theta}(x)$ is:
+
+\begin{equation}
+D_{\mathrm{KL}}(q(x) \parallel p_{\theta}(x))
+=
+\int dx \,
+q(x)
+\log
+\frac{q(x)}{p_{\theta}(x)}
+=
+\mathbb{E}_{q}[\log q(x)]
+-
+\mathbb{E}_{q}[\log p_{\theta}(x)].
+\end{equation}
+
+Suppose we observe independent and identically distributed samples
+\(\{x_1, x_2, \dots, x_N\}\) drawn from the true distribution \(q(x)\).
+The average log-likelihood for the model \(p_\theta(x)\) is given by \eqref{eq:inf}, which in the limit of infinite data tends to an expectation value over \(q(x)\). We use this to rewrite the maximum-likelihood estimator \(\theta_{\mathrm{ML}}\).
+
+\begin{equation}
+\frac{1}{N}\log \mathcal{L}(\theta)
+=
+\frac{1}{N}
+\sum_{i=1}^{N}
+\log p_{\theta}(x_i)
+\;\longrightarrow\;
+\mathbb{E}_{q}[\log p_{\theta}(x)] .
+\label{eq:inf}
+\end{equation}
+
+\begin{equation}
+\theta_{\mathrm{ML}}
+=
+\arg\max_{\theta}
+\sum_{i=1}^{N}
+\log p_{\theta}(x_i)
+\;\longrightarrow\;
+\arg\max_{\theta}
+\mathbb{E}_{q}[\log p_{\theta}(x)] .
+\label{eq:inf2}
+\end{equation}
+
+\begin{equation}
+\theta_{\mathrm{ML}}
+=
+\arg\min_{\theta}
+D_{\mathrm{KL}}(q \parallel p_{\theta}) .
+\end{equation}
+
+In the infinite-data limit, Maximum Likelihood Estimation is equivalent to minimizing the KL divergence. Introducing the cross-entropy \(H(q,p_\theta)\) from information theory, and using its relation to the KL divergence \eqref{eq:inf3} the estimator can be recast.
+
+\begin{equation}
+D_{\mathrm{KL}}(q \parallel p_\theta)
+=
+H(q,p_\theta) - H(q),
+\label{eq:inf3}
+\end{equation}
+
+\begin{equation}
+\theta_{\mathrm{ML}}
+=
+\arg\min_{\theta}
+H(q,p_\theta).
+\end{equation}
+
+
+\section{Prior Art: A Log-Likelihood Test}
+
+The traditional approach to measure QmisID backgrounds uses a Poisson binned-likelihood technique \cite{huang2025qmisid}. One can denote the observed number of SC events in one bin as \(N_{\mathrm{SC}}\), and model the probability of observing \(N_{\mathrm{SC}}\) as a Poisson distribution with mean \(\mu\), which is a function of the total number of counts in that bin and the flip rates of electron 1 and 2, \(\epsilon\). This is a first-order approximation that ignores second-order terms, where both electron 1 and electron 2 have been flipped in reconstruction.
+
+\begin{equation}
+P\!\left(
+N_{\mathrm{SC}}^{ij,kl}
+\,\middle|\,
+\mu^{ij,kl}
+\right)
+=
+\frac{
+\left(\mu^{ij,kl}\right)^{N_{\mathrm{SC}}^{ij,kl}}
+}{
+N_{\mathrm{SC}}^{ij,kl}!
+}
+\,e^{-\mu^{ij,kl}},
+\qquad
+\mu^{ij,kl}
+=
+N^{ij,kl}
+\left(
+\epsilon^{i,k}
++
+\epsilon^{j,l}
+\right)
+\end{equation}
+
+The QmisID rate is estimated by minimising the following likelihood function in terms of \(\eta\) and \(p_T\):
+\begin{equation}
+-\ln L\!\left(\epsilon\mid N_{\mathrm{SC}},N\right)
+\approx
+\sum_{i,j,k,l}
+\left[
+N_{\mathrm{SC}}^{ij,kl}\,
+\ln\!\Big(N^{ij,kl}\big(\epsilon^{i,k}+\epsilon^{j,l}\big)\Big)
+-
+N^{ij,kl}\big(\epsilon^{i,k}+\epsilon^{j,l}\big)
+\right].
+\end{equation}
+
+
+\section{Modern Approach: A KL Divergence Test}
+To formulate the problem in a continuous probabilistic framework, we denote the truth-level rate of di-electron events by \(\lambda^{T}(e_1,e_2)\). Each electron undergoes independent charge misidentification with probability \(\epsilon(e)\), giving reconstructed rates \(\lambda^{R}(e_1,e_2)\) of opposite-charge (OC) and same-charge (SC) events.
+
+\begin{equation}
+\begin{aligned}
+    \lambda_{\mathrm{OC}}^{R}(e_1,e_2)
+    &= \lambda^{T}(e_1,e_2)\,
+       \Big[(1-\epsilon(e_1))(1-\epsilon(e_2))
+       + \epsilon(e_1)\epsilon(e_2)\Big], \\[6pt]
+    \lambda_{\mathrm{SC}}^{R}(e_1,e_2)
+    &= \lambda^{T}(e_1,e_2)\,
+       \Big[\epsilon(e_1)(1-\epsilon(e_2))
+       + (1-\epsilon(e_1))\epsilon(e_2)\Big] \\[4pt]
+    &= \lambda^{T}(e_1,e_2)\,
+       \Big[\epsilon(e_1) + \epsilon(e_2)
+       - 2\,\epsilon(e_1)\epsilon(e_2)\Big].
+\end{aligned}
+\end{equation}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{distribution.png}
+    \caption{
+    Schematic illustration of the charge-misidentification process, mapping the truth-level distribution \(\lambda^{T}(e_1,e_2)\) to the reconstructed distribution \(\lambda^{R}(e_1,e_2)\).
+    }
+    \label{fig:distribution}
+\end{figure}
+
+The ratio of the expected number of SC and OC events for a given pair of electron kinematics \((e_1,e_2)\) is therefore a simple function of the corresponding charge-flip probabilities \(\epsilon(e_1)\) and \(\epsilon(e_2)\). The common factor \(\lambda^{T}(e_1,e_2)\) cancels, so the ratio \(\dfrac{\lambda_{\mathrm{SC}}^{R}(e_1,e_2)}{\lambda_{\mathrm{OC}}^{R}(e_1,e_2)}\) is independent of the unknown truth-level distribution.
+
+\begin{equation}
+\label{eq:kappa}
+\kappa(e) \;=\; \log\!\left(\frac{\epsilon(e)}{1-\epsilon(e)}\right).
+\end{equation}
+
+
+
+Our goal is to construct a probabilistic model \(p\) that predicts the true conditional probability  \(q\)  of same-charge assignment given the kinematic properties of two electrons, 
+\(
+p\!\left(\mathrm{SC}\mid x_1,x_2\right)
+=
+q\!\left(\mathrm{SC}\mid x_1,x_2\right).
+\)
+Let \(q_i\) = \(\ell_i \in \{0,1\}\) denote the observed label for event \(i\), where \(\ell_i=1\) corresponds to an SC event and \(\ell_i=0\) to an OC event. 
+
+A model distribution \(p\) most closely matches the data distribution \(q\) when the KL divergence or equivalently the cross-entropy loss $H(q/p)$ is minimized. A binary cross-entropy loss can be written as shown below.
+
+\begin{equation}
+\label{eq:loss}
+\mathcal{L}[f]
+=
+-\frac{1}{N}
+\sum_{i=1}^{N}
+\left[
+\ell_i\,
+\log\!\big(
+\sigma(p(\mathrm{OC} \mid x_1, x_2))
+\big)
++
+(1-\ell_i)\,
+\log\!\big(
+p(\mathrm{SC} \mid x_1, x_2)
+\big)
+\right].
+\end{equation}
+
+
+The model predicts a probability \(
+p 
+=
+\sigma\!\big(f(e_1^i,e_2^i)\big),
+\) where \(f(e_1,e_2)\) is a real-valued classifier score wrapped by the sigmoid function
+\(
+\sigma(f)
+=
+\frac{1}{1+e^{-f}}
+\). 
+
+\begin{equation}
+\label{eq:logratio}
+\log\!\left(
+    \frac{p(\mathrm{OC}\mid e_1,e_2)}{p(\mathrm{SC}\mid e_1,e_2)}
+\right)
+=
+\log\!\left(1 + e^{\kappa(e_1) + \kappa(e_2)}\right)
+-
+\log\!\left(e^{\kappa(e_1)} + e^{\kappa(e_2)}\right)
+\end{equation}
+
+A well-trained classifier \(f_{\mathrm{min}}\) converges to the
+solution \(\phi(e) = \kappa(e)\).
+
+\begin{equation}
+    \label{eq:classifier_ratio}
+    \frac{p(\mathrm{SC}\mid e_1,e_2)}{p(\mathrm{OC}\mid e_1,e_2)}
+    \;=\; \frac{\sigma(f)}{1 - \sigma(f)}
+    \;=\; e^{f(e_1,e_2)}.
+\end{equation}
+
+\begin{equation}
+    \label{eq:f_phi}
+    f(e_1,e_2)
+    \;=\; \log\!\left(1 + e^{\phi(e_1) + \phi(e_2)}\right)
+    \;-\; \log\!\left(e^{\phi(e_1)} + e^{\phi(e_2)}\right).
+\end{equation}
+
+
+Neural networks are universal function approximators and are therefore ideally suited to learning continuous detector calibration functions. In this thesis, the model is implemented as a dense neural network (DNN) using the PyTorch machine learning framework. A DNN is a parametrised continuous map from an input space \(\mathbb{R}^m\) to an output space \(\mathbb{R}^n\), constructed as a sequence of affine transformations interleaved with non-linear activation functions LeakyReLU:
+
+\begin{equation}
+\label{eq:nn}
+\phi(\vec{x}) =
+M_N \cdots
+\mathrm{LeakyReLU}\!\left\{
+M_2\,
+\mathrm{LeakyReLU}\!\left[
+M_1\,\mathrm{Norm}(\vec{x}) + \vec{b}_1
+\right]
++ \vec{b}_2
+\right\}
+\cdots
++ \vec{b}_N.
+\end{equation}
+
+In Eq.~\ref{eq:nn}, the matrices \(M_i\) and bias vectors \(\vec{b}_i\) contain the trainable parameters of the network. A notable feature of the architecture used in this work is the use of an automated input normalisation layer, denoted \(\mathrm{Norm}(\vec{x})\), positioned before the first affine transformation \cite{wilkinson2024divergences}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{NN.png}
+    \caption{Neural network architecture.}
+    \label{fig:nn_arch}
+\end{figure}
+
+For the task at hand, the network learns a continuous mapping
+\(
+\mathbb{R}^2\rightarrow\mathbb{R},
+\)
+using five hidden layers and producing a single scalar output \(\phi(e)\). This output is inverted to recover the corresponding charge-flip probability  \(\epsilon(e)\). Despite the simple architecture, the network is sufficiently expressive to model the smooth kinematic dependence of electron misidentification rates across detector phase space.
+
+\section{Data}
+
+\section{Control Region Selection and Object Definitions}
+
+QmisID is estimated in the $Z$-peak region, defined by the di-lepton invariant mass window $81 < m_{\ell\ell} < 101$~GeV, where the standard-model opposite-charge $Z\to ee$ signature is overwhelmingly dominant. Training samples (data and Monte Carlo) are extracted within the QmisID control region, which is constructed to be orthogonal to the 2$\ell$SC signal region. Orthogonality is enforced by the $N_{\text{jet}} < 2$ requirement, highlighted in blue, ensuring the training does not overfit to signal-region characteristics prior to un-blinding. 
+\begin{table}[H]
+\centering
+\caption{Signal region (left) and QmisID control region (right) selection criteria for the $2\ell$SC channel.}
+\label{tab:sr_cr}
+\begin{minipage}[t]{0.48\textwidth}
+\centering
+\begin{tabular}{ll}
+\hline
+\textbf{Selection} & \textbf{Requirement} \\
+\hline
+Leptons              & Two same-sign leptons \\
+Lepton $p_{\text{T}}$ & $\geq 20~\text{GeV}$ \\
+Jet multiplicity     & \textcolor{blue}{$N_{\text{jets}} \geq 2$} \\
+$b$-jet multiplicity & $N_{b\text{-jets}} = 0$ \\
+Dilepton mass        & $m_{\ell\ell} > 12~\text{GeV}$ \\
+\hline
+\end{tabular}
+\subcaption{Signal region}
+\label{tab:signal_region}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+\centering
+\begin{tabular}{ll}
+\hline
+\textbf{Selection} & \textbf{Requirement} \\
+\hline
+Leptons              & $e^{\pm}e^{\pm}/e^{\mp}e^{\mp}$ \\
+Hadronic $\tau$      & $N^{\Sigma Q^{f}}_{\tau_{\text{had}}} = 0$ \\
+Jet multiplicity     & \textcolor{blue}{$N_{\text{jets}} < 2$} \\
+$b$-jet multiplicity & $N_{b\text{-jets}} = 0$ \\
+$m_{\ell\ell}$ [GeV] & $[81,\,101]$ \\
+\hline
+\end{tabular}
+\subcaption{QmisID control region}
+\label{tab:qmisid_cr}
+\end{minipage}
+\end{table}
+
+Electrons are reconstructed by matching energy deposits in the EM calorimeter to tracks in the inner detector. Geometric cuts on both the transverse impact parameter significance $d_0/\sigma_{d_0}$ and the longitudinal impact parameter $z_0$ are made to make sure that electrons originate from a primary interaction vertex. Isolation from other objects is enforced through the lepton isolation working point \texttt{PLV Loose} algorithm.
+
+Jets are reconstructed with the anti-$k_t$ algorithm~\cite{cacciari2008antikt} using a radius parameter $\Delta R = 0.4$, where $\Delta R \equiv \sqrt{(\Delta\eta)^2 + (\Delta\phi)^2}$ denotes the angular separation in the pseudorapidity--azimuth plane. The \texttt{LooseBad} cleaning working point, recommended by the Jet/$E_{\text{T}}^{\text{miss}}$ Combined Performance Group~\cite{atlas_twiki_jetetmiss}, is applied as the default ATLAS jet-quality selection and rejects approximately 99.5\% of fake jets.
