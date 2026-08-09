@@ -90,7 +90,7 @@ H(q,p_\theta).
 \end{equation}
 
 
-\subsection{Prior Art: Log-Likelihood Test}
+\subsection{Binned Likelihood Approach}
 
 The traditional approach to measure QmisID backgrounds uses a Poisson binned-likelihood technique \cite{huang2025qmisid}. One can denote the observed number of SC events in one bin as \(N_{\mathrm{SC}}\), and model the probability of observing \(N_{\mathrm{SC}}\) as a Poisson distribution with mean \(\mu\), which is a function of the total number of counts in that bin and the flip rates of electron 1 and 2, \(\epsilon\). This is a first-order approximation that ignores second-order terms, where both electron 1 and electron 2 have been flipped in reconstruction.
 
@@ -132,7 +132,7 @@ N^{ij,kl}\big(\epsilon^{i,k}+\epsilon^{j,l}\big)
 \end{equation}
 
 
-\subsection{New Approach: KL Divergence Test}
+\subsection{A Continuous Framework}
 To formulate the problem in a continuous probabilistic framework, we denote the truth-level rate of di-electron events by \(\lambda^{T}(x_1,x_2)\). Each electron undergoes independent charge misidentification with probability \(\epsilon(x)\), giving reconstructed rates \(\lambda^{R}(x_1,x_2)\) of opposite-charge (OC) and same-charge (SC) events.
 
 \begin{equation}
@@ -187,7 +187,7 @@ p(\mathrm{SC} \mid x_1, x_2)
 
 
 Alternatively one can write \(
-p 
+p(\mathrm{SC} \mid x_1, x_2)
 =
 \sigma\!\big(f(x_1^i,x_2^i)\big),
 \) where \(f(x_1,x_2)\) is a real-valued classifier score.
@@ -265,7 +265,7 @@ Dilepton mass        & $m_{\ell\ell} > 12~\text{GeV}$ \\
 \hline
 \textbf{Selection} & \textbf{Requirement} \\
 \hline
-Leptons              & $e^{\pm}e^{\pm}/e^{\mp}e^{\mp}$ \\
+Leptons              & $e^{\pm}e^{\pm}$ \\
 Hadronic $\tau$      & $N^{\Sigma Q^{f}}_{\tau_{\text{had}}} = 0$ \\
 Jet multiplicity     & \textcolor{blue}{$N_{\text{jets}} < 2$} \\
 $b$-jet multiplicity & $N_{b\text{-jets}} = 0$ \\
