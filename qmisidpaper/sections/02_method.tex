@@ -1,4 +1,4 @@
-\section{Method}
+\section{From Binned Likelihood to a Continuous Framework}
 \label{sec:method}
 
 Maximum Likelihood Estimation (MLE) is a flexible way of estimating the parameters of an assumed probability distribution $p$ given some observed data $q$. The point in parameter space $\theta_{\mathrm{ML}}$ that maximises the likelihood function is the maximum likelihood estimate,
@@ -90,7 +90,7 @@ H(q,p_\theta).
 \end{equation}
 
 
-\section{Prior Art: A Log-Likelihood Test}
+\subsection{Prior Art: A Log-Likelihood Test}
 
 The traditional approach to measure QmisID backgrounds uses a Poisson binned-likelihood technique \cite{huang2025qmisid}. One can denote the observed number of SC events in one bin as \(N_{\mathrm{SC}}\), and model the probability of observing \(N_{\mathrm{SC}}\) as a Poisson distribution with mean \(\mu\), which is a function of the total number of counts in that bin and the flip rates of electron 1 and 2, \(\epsilon\). This is a first-order approximation that ignores second-order terms, where both electron 1 and electron 2 have been flipped in reconstruction.
 
@@ -132,7 +132,7 @@ N^{ij,kl}\big(\epsilon^{i,k}+\epsilon^{j,l}\big)
 \end{equation}
 
 
-\section{Modern Approach: A KL Divergence Test}
+\subsection{New Approach: A KL Divergence Test}
 To formulate the problem in a continuous probabilistic framework, we denote the truth-level rate of di-electron events by \(\lambda^{T}(e_1,e_2)\). Each electron undergoes independent charge misidentification with probability \(\epsilon(e)\), giving reconstructed rates \(\lambda^{R}(e_1,e_2)\) of opposite-charge (OC) and same-charge (SC) events.
 
 \begin{equation}
@@ -151,23 +151,23 @@ To formulate the problem in a continuous probabilistic framework, we denote the 
 \end{aligned}
 \end{equation}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\linewidth]{distribution.png}
-    \caption{
-    Schematic illustration of the charge-misidentification process, mapping the truth-level distribution \(\lambda^{T}(e_1,e_2)\) to the reconstructed distribution \(\lambda^{R}(e_1,e_2)\).
-    }
-    \label{fig:distribution}
-\end{figure}
-
 The ratio of the expected number of SC and OC events for a given pair of electron kinematics \((e_1,e_2)\) is therefore a simple function of the corresponding charge-flip probabilities \(\epsilon(e_1)\) and \(\epsilon(e_2)\). The common factor \(\lambda^{T}(e_1,e_2)\) cancels, so the ratio \(\dfrac{\lambda_{\mathrm{SC}}^{R}(e_1,e_2)}{\lambda_{\mathrm{OC}}^{R}(e_1,e_2)}\) is independent of the unknown truth-level distribution.
 
+Introducing the rescaled variable
 \begin{equation}
 \label{eq:kappa}
-\kappa(e) \;=\; \log\!\left(\frac{\epsilon(e)}{1-\epsilon(e)}\right).
+\kappa(e) \;=\; \log\!\left(\frac{\epsilon(e)}{1-\epsilon(e)}\right),
 \end{equation}
-
-
+this becomes
+\begin{equation}
+\label{eq:ratio_kappa}
+\frac{\lambda_{\mathrm{SC}}^{R}(e_1,e_2)}{\lambda_{\mathrm{OC}}^{R}(e_1,e_2)}
+\;=\;
+\frac{e^{\kappa(e_1)}+e^{\kappa(e_2)}}{1+e^{\kappa(e_1)+\kappa(e_2)}}
+\;=\;
+\frac{\cosh\!\left(\dfrac{\kappa(e_1)-\kappa(e_2)}{2}\right)}{\cosh\!\left(\dfrac{\kappa(e_1)+\kappa(e_2)}{2}\right)},
+\end{equation}
+which depends on \(e_1\) and \(e_2\) only through the sum and difference of their rescaled charge-flip variables.
 
 Our goal is to construct a probabilistic model \(p\) that predicts the true conditional probability  \(q\)  of same-charge assignment given the kinematic properties of two electrons, 
 \(
@@ -177,7 +177,7 @@ q\!\left(\mathrm{SC}\mid x_1,x_2\right).
 \)
 Let \(q_i\) = \(\ell_i \in \{0,1\}\) denote the observed label for event \(i\), where \(\ell_i=1\) corresponds to an SC event and \(\ell_i=0\) to an OC event. 
 
-A model distribution \(p\) most closely matches the data distribution \(q\) when the KL divergence or equivalently the cross-entropy loss $H(q/p)$ is minimized. A binary cross-entropy loss can be written as shown below.
+A model distribution \(p\) most closely matches the data distribution \(q\) when the KL divergence or equivalently the cross-entropy loss $H(\frac{q}{p})$ is minimized. A binary cross-entropy loss can be written as shown below.
 
 \begin{equation}
 \label{eq:loss}
@@ -199,11 +199,11 @@ p(\mathrm{SC} \mid x_1, x_2)
 \end{equation}
 
 
-The model predicts a probability \(
+Alternatively one can write \(
 p 
 =
 \sigma\!\big(f(e_1^i,e_2^i)\big),
-\) where \(f(e_1,e_2)\) is a real-valued classifier score wrapped by the sigmoid function
+\) where \(f(e_1,e_2)\) is a real-valued classifier score.
 \(
 \sigma(f)
 =
@@ -221,15 +221,6 @@ p
 \log\!\left(e^{\kappa(e_1)} + e^{\kappa(e_2)}\right)
 \end{equation}
 
-A well-trained classifier \(f_{\mathrm{min}}\) converges to the
-solution \(\phi(e) = \kappa(e)\).
-
-\begin{equation}
-    \label{eq:classifier_ratio}
-    \frac{p(\mathrm{SC}\mid e_1,e_2)}{p(\mathrm{OC}\mid e_1,e_2)}
-    \;=\; \frac{\sigma(f)}{1 - \sigma(f)}
-    \;=\; e^{f(e_1,e_2)}.
-\end{equation}
 
 \begin{equation}
     \label{eq:f_phi}
@@ -238,6 +229,8 @@ solution \(\phi(e) = \kappa(e)\).
     \;-\; \log\!\left(e^{\phi(e_1)} + e^{\phi(e_2)}\right).
 \end{equation}
 
+A well-trained classifier \(f_{\mathrm{min}}\) converges to the
+solution \(\phi(e) = \kappa(e)\).
 
 Neural networks are universal function approximators and are therefore ideally suited to learning continuous detector calibration functions. In this thesis, the model is implemented as a dense neural network (DNN) using the PyTorch machine learning framework. A DNN is a parametrised continuous map from an input space \(\mathbb{R}^m\) to an output space \(\mathbb{R}^n\), constructed as a sequence of affine transformations interleaved with non-linear activation functions LeakyReLU:
 
@@ -257,7 +250,7 @@ M_1\,\mathrm{Norm}(\vec{x}) + \vec{b}_1
 \end{equation}
 
 In Eq.~\ref{eq:nn}, the matrices \(M_i\) and bias vectors \(\vec{b}_i\) contain the trainable parameters of the network. A notable feature of the architecture used in this work is the use of an automated input normalisation layer, denoted \(\mathrm{Norm}(\vec{x})\), positioned before the first affine transformation \cite{wilkinson2024divergences}.
-\begin{figure}[H]
+\begin{figure}[h]
     \centering
     \includegraphics[width=\linewidth]{NN.png}
     \caption{Neural network architecture.}
