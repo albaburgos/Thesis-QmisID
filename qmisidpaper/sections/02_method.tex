@@ -153,21 +153,7 @@ To formulate the problem in a continuous probabilistic framework, we denote the 
 
 The ratio of the expected number of SC and OC events for a given pair of electron kinematics \((e_1,e_2)\) is therefore a simple function of the corresponding charge-flip probabilities \(\epsilon(e_1)\) and \(\epsilon(e_2)\). The common factor \(\lambda^{T}(e_1,e_2)\) cancels, so the ratio \(\dfrac{\lambda_{\mathrm{SC}}^{R}(e_1,e_2)}{\lambda_{\mathrm{OC}}^{R}(e_1,e_2)}\) is independent of the unknown truth-level distribution.
 
-Introducing the rescaled variable
-\begin{equation}
-\label{eq:kappa}
-\kappa(e) \;=\; \log\!\left(\frac{\epsilon(e)}{1-\epsilon(e)}\right),
-\end{equation}
-this becomes
-\begin{equation}
-\label{eq:ratio_kappa}
-\frac{\lambda_{\mathrm{SC}}^{R}(e_1,e_2)}{\lambda_{\mathrm{OC}}^{R}(e_1,e_2)}
-\;=\;
-\frac{e^{\kappa(e_1)}+e^{\kappa(e_2)}}{1+e^{\kappa(e_1)+\kappa(e_2)}}
-\;=\;
-\frac{\cosh\!\left(\dfrac{\kappa(e_1)-\kappa(e_2)}{2}\right)}{\cosh\!\left(\dfrac{\kappa(e_1)+\kappa(e_2)}{2}\right)},
-\end{equation}
-which depends on \(e_1\) and \(e_2\) only through the sum and difference of their rescaled charge-flip variables.
+Introducing the rescaled variable \(\kappa(e) = \log\!\left(\epsilon(e)/(1-\epsilon(e))\right)\), the ratio becomes \(\lambda_{\mathrm{SC}}^{R}(e_1,e_2)/\lambda_{\mathrm{OC}}^{R}(e_1,e_2) = \left(e^{\kappa(e_1)}+e^{\kappa(e_2)}\right)/\left(1+e^{\kappa(e_1)+\kappa(e_2)}\right)\), which depends on \(e_1\) and \(e_2\) only through their individual rescaled charge-flip variables.
 
 Our goal is to construct a probabilistic model \(p\) that predicts the true conditional probability  \(q\)  of same-charge assignment given the kinematic properties of two electrons, 
 \(
@@ -204,22 +190,6 @@ p
 =
 \sigma\!\big(f(e_1^i,e_2^i)\big),
 \) where \(f(e_1,e_2)\) is a real-valued classifier score.
-\(
-\sigma(f)
-=
-\frac{1}{1+e^{-f}}
-\). 
-
-\begin{equation}
-\label{eq:logratio}
-\log\!\left(
-    \frac{p(\mathrm{OC}\mid e_1,e_2)}{p(\mathrm{SC}\mid e_1,e_2)}
-\right)
-=
-\log\!\left(1 + e^{\kappa(e_1) + \kappa(e_2)}\right)
--
-\log\!\left(e^{\kappa(e_1)} + e^{\kappa(e_2)}\right)
-\end{equation}
 
 
 \begin{equation}
@@ -250,9 +220,9 @@ M_1\,\mathrm{Norm}(\vec{x}) + \vec{b}_1
 \end{equation}
 
 In Eq.~\ref{eq:nn}, the matrices \(M_i\) and bias vectors \(\vec{b}_i\) contain the trainable parameters of the network. A notable feature of the architecture used in this work is the use of an automated input normalisation layer, denoted \(\mathrm{Norm}(\vec{x})\), positioned before the first affine transformation \cite{wilkinson2024divergences}.
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{NN.png}
+    \includegraphics[width=\linewidth]{figures/NN.png}
     \caption{Neural network architecture.}
     \label{fig:nn_arch}
 \end{figure}
@@ -261,7 +231,7 @@ For the task at hand, the network learns a continuous mapping
 \(
 \mathbb{R}^2\rightarrow\mathbb{R},
 \)
-using five hidden layers and producing a single scalar output \(\phi(e)\). This output is inverted to recover the corresponding charge-flip probability  \(\epsilon(e)\). Despite the simple architecture, the network is sufficiently expressive to model the smooth kinematic dependence of electron misidentification rates across detector phase space.
+using five hidden layers and producing a single scalar output \(\phi(e)\). This output is inverted to recover the corresponding charge-flip probability  \(\epsilon(e)\). Despite the simple architecture, the network is sufficiently expressive to model the smooth kinematic dependence of charged particle misidentification rates across detector phase space.
 
 
 \section{Control Region Selection and Object Definitions}
