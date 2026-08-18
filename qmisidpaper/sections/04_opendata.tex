@@ -1,5 +1,38 @@
-\section{ATLAS Open Data}
+\section{ATLAS CERN Open Data}
 \label{sec:Opendata}
 
+As a proof-of-principle beyond simulation truth, the continuous framework is also applied to real collision data from the 2024 ATLAS Open Data release (\texttt{2024r-pp}). We use \(Z\rightarrow ee\) events from the \texttt{Sh\_2211\_Zee\_maxHTpTV2} sample (dataset ID 700320) in \texttt{DAOD\_PHYSLITE} format, streamed directly from the ATLAS Open Data endpoints with \texttt{uproot}. For each file, reconstructed-electron kinematics (\(p_T\), \(\eta\), \(\phi\), charge) and the existing electron-chain charge-ID decision (\texttt{DFCommonElectronsECIDS}/\texttt{ECIDSResult}) are read from the \texttt{AnalysisElectrons} container.
 
-Results on CERN ATLAS open data (data & MC)
+\subsection{Truth Matching}
+
+Isolating charge misidentification in open data requires knowing, for each reconstructed electron, whether its assigned charge matches its true generator-level charge. Every reconstructed electron carries an \texttt{ElementLink} (\texttt{TruthLink}) to the corresponding truth particle, stored as a pair \((\texttt{m\_persIndex}, \texttt{m\_persKey})\): the index of the linked particle within its target container, and a hashed key identifying which container is targeted.
+
+Two cases must be excluded before an index can be used. First, an unset link stores \texttt{persIndex} as the sentinel \(2^{32}-1\), rather than a real index. Second, because only the \texttt{TruthElectrons} container is loaded, a link whose \texttt{persIndex} exceeds that container's length in a given event does not indicate a bad match — it means the link legitimately points elsewhere, most commonly into \texttt{TruthPhotons} for electrons produced by photon conversion. With only \texttt{TruthElectrons} available, \texttt{persKey} alone cannot distinguish this case from a genuine match, so both classes of index are removed prior to lookup. The surviving indices are used to retrieve the matched particle's PDG ID and dressed \((p_T,\eta)\) from \texttt{TruthElectrons}, from which the truth charge follows directly (\(\mathrm{pdgId}=11\rightarrow q^{\mathrm{truth}}=-1\), \(\mathrm{pdgId}=-11\rightarrow q^{\mathrm{truth}}=+1\)). An electron is considered truth matched only if its link is valid, \(\texttt{persKey}\neq 0\), and the matched particle is a genuine electron or positron.
+
+The truth-level QmisID label is then obtained by comparing reconstructed and truth charge for each electron,
+\[
+\ell^{\mathrm{truth}} = \mathbb{1}\!\left[q^{\mathrm{reco}} \neq q^{\mathrm{truth}}\right],
+\]
+independent of any detector-level identification algorithm. Events are additionally required to contain exactly two reconstructed electrons, each with \(p_T > 20\)~GeV, and both truth matched; the pair is then ordered by descending \(p_T\) and the dielectron invariant mass \(m_{\ell\ell}\) is formed from the leading and subleading four-vectors.
+
+\subsection{Dataset}
+
+Applying this selection to the \texttt{Sh\_2211\_Zee} sample yields a highly OC-dominated dielectron dataset, as expected for a Drell--Yan process with a small, physical QmisID contamination from photon conversions and bremsstrahlung-induced tracking errors. \Cref{tab:opendata} summarises the two file batches processed to date, identified by their parent DAOD run number.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lrrr}
+\toprule
+Run (DAOD\_PHYSLITE) & Dielectron events & OC (\(\ell^{\mathrm{truth}}=0\)) & SC (\(\ell^{\mathrm{truth}}=1\)) \\
+\midrule
+37621257 (2 files)  & 152{,}150   & 150{,}764 (99.1\%) & 1{,}386 (0.9\%)  \\
+37621269 (18 files) & 1{,}372{,}046 & 1{,}359{,}146 (99.1\%) & 12{,}900 (0.9\%) \\
+\midrule
+Total & 1{,}524{,}196 & 1{,}509{,}910 & 14{,}286 \\
+\bottomrule
+\end{tabular}
+\caption{Truth-matched dielectron events from ATLAS Open Data (\(Z\rightarrow ee\), DID 700320), by source run.}
+\label{tab:opendata}
+\end{table}
+
+The observed same-charge fraction of \(\mathcal{O}(1\%)\) is consistent with the low charge-flip probabilities expected in the central detector region, and provides a data-driven cross-check of the network trained on simulated truth in \cref{sec:method}.

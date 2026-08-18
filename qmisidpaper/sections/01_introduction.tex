@@ -1,18 +1,10 @@
 \section{QmisID: Charge Misidentification}
 
-Across all channels, the di-Higgs search is challenging the limits of the LHC.
+This paper is geared towards the goal of learning particle-level detector response functions that are fully differential. These encompass both continuous functions (i.e. resolution effects) as well as discrete functions. 
+Here we focus on the second task: learning to predict whether a particle produced via pair-production has been misiedentified (e+ detected as e- or vice cerse) during reconstruction. 
 
-Around \(5000\) di-Higgs events are expected in the full \(147\,\mathrm{fb}^{-1}\) Run-2 dataset, three orders of magnitude fewer than single-Higgs events \cite{atlas2024dihiggsbriefing}. To maximize sensitivity to this rare process, the ATLAS Collaboration performs a combined search across several decay channels. The largest branching fraction is\(HH \rightarrow b\bar{b}b\bar{b},\) at \(34\%\). However, large multijet backgrounds make this channel experimentally challenging. An alternative strategy is the \textbf{multi-lepton channel}, sometimes referred to as ``di-Higgs soup'', which combines the decay modes
-\(
-HH \rightarrow W^+W^-,\ ZZ^*,\ \tau_{had}\tau_{had},
-\)
-leading to final states containing leptons, jets, and missing transverse momentum. Although the total branching fraction is only about \(12\%\), the reduced Standard Model backgrounds provide competitive sensitivity to di-Higgs production. 
-
-
-The focus of this paper is the \textbf{two-lepton same-charge (2LSC) channel}, one of the nine sub-channels in the multi-lepton decay. It consists of two light leptons (electrons or muons) of the same charge, and sensitivity is currently limited by QmisID background estimation uncertainties.
-
-QmisID events occur when when a reco label of same-charge (SC) is mistakenly assigned to a two-lepton event which was opposite-charge (OC) in truth. 
-Two physical mechanisms can lead to charge misidentification. First, the curvature of a charged particle's trajectory in a uniform magnetic field asymptotically approaches zero at high transverse momentum. Minor deflection of the track, for instance due to scattering inside the detector, can lead to a charge flip. 
+This is very relevant to the two-lepton same-charge (2LSC) channel of the di-Higgs decay. This is one of the nine sub-channels in the di-Higgs multi-lepton decay, which consists of two light leptons (electrons or muons) of the same charge. QmisID events occur when when a reco label of same-charge (SC) is mistakenly assigned to a two-lepton event which was opposite-charge (OC) in truth. 
+Two physical mechanisms can come into play. First, the curvature of a charged particle's trajectory in a uniform magnetic field asymptotically approaches zero at high transverse momentum. Minor deflection of the track, for instance due to scattering inside the detector, can lead to a charge flip. 
 
 The second mechanism is bremsstrahlung followed by photon conversion:
 an electron interacts with the detector material, radiates a photon,
@@ -24,11 +16,9 @@ reconstruction algorithm follows that secondary track instead of the
 original one; the probability of this grows with photon
 energy~\cite{wichmann2008diplomarbeit}. The effect has a strong functional dependence on pseudorapidity \(\eta\), as the density of the inner detector increases from 0 to 2.5 in absolute value of \(\eta\). Pseudorapidity \(\eta\) is a spatial coordinate, where \(\theta\) is the polar angle between the particle's momentum vector and the beam axis.
 
-
 \begin{equation}
     \eta = -\ln\!\left(\tan\frac{\theta}{2}\right).
 \end{equation}
 
 
-
-
+We would like to learn to predict the probability of charged particle, including electron, misidentification with a method that is fully differential.
